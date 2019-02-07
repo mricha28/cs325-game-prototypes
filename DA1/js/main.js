@@ -13,7 +13,7 @@ var phaserGlobal;
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-    game.load.image('ball', 'assets/sprites/ball.png');
+    game.load.image('ball', 'assets/Sprites/ball.png');
     game.load.audio('plop', 'assets/soundEffects/plop.mp3');
     game.load.audio('music', 'assets/soundEffects/music.mp3')
 }
