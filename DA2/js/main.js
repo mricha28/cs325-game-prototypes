@@ -13,11 +13,12 @@ window.onload = function() {
     var game = new Phaser.Game( 1200, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
     
     function preload() {
-        // Load an image and call it 'logo'.
+        //Load images
         game.load.image( 'Cursor_01', 'assets/Cursor_01.png' );
         game.load.image( 'Cursor_02', 'assets/Cursor_02.png');
         game.load.image( 'Bullet1', 'assets/Bullet1.png');
         game.load.image( 'Bullet2', 'assets/Bullet2.png');
+        game.load.audio( 'Music', 'assets/Music.mp3');
     }
     
     var Cursor_01;
@@ -32,11 +33,17 @@ window.onload = function() {
     var nextFire = 0;
     var fireRate2 = 140;
     var nextFire2 = 0;
-    var player1Health = 100;
-    var player2Health = 100;
+    var player1Health = 150;
+    var player2Health = 150;
     var player1HealthText;
     var player2HealthText;
+    var isEndGame;
+    var endGameText;
+    var music;
+    
     function create() {
+
+        isEndGame = false;
         // Create a sprite at the center of the screen using the 'logo' image.
         Cursor_01 = game.add.sprite( game.world.centerX - 25, game.world.centerY, 'Cursor_01' );
         Cursor_02 = game.add.sprite( game.world.centerX + 25, game.world.centerY, 'Cursor_02' );
@@ -45,7 +52,6 @@ window.onload = function() {
         // so it will be truly centered.
         Cursor_01.anchor.setTo( 0.5, 0.5 );
         Cursor_02.anchor.setTo( 0.5, 0.5 );
-        
 
         game.physics.arcade.enable(Cursor_01);
         game.physics.arcade.enable(Cursor_02);
@@ -81,12 +87,20 @@ window.onload = function() {
             };
 
         player1HealthText = game.add.text(16, 16, 'Player 1 Health = ' + player1Health, { fill: '#ffffff' });
-        player2HealthText = game.add.text(16, 46, 'Player 2 Health = ' + player2Health, { fill: '#ffffff' });
+        player2HealthText = game.add.text(16, 46, 'Player 2 Health = ' + player2Health, { fill: '#ffffff' })
+
+        game.physics.arcade.collide(bullets1, Cursor_02);
+        game.physics.arcade.collide(bullets2, Cursor_01);
+
+        music = game.add.audio('Music');
+        music.play();
 
     }
     
     function update() {
-    
+        //if game is not over
+        if(!isEndGame)
+        {
         player1Move();
         player2Move();
         player1Rotation();
@@ -98,19 +112,61 @@ window.onload = function() {
         if(Cursor_02.body.velocity.x != 0 || Cursor_02.body.velocity.y != 0)
         {
             fire2();
-        }
+        }  
 
-        if(checkOverlap(bullets1, Cursor_02) && player2Health > 0)
-        {
-            player2Health -= 1;
+        game.physics.arcade.overlap(bullets1, Cursor_02, takeHealth2);
+        game.physics.arcade.overlap(bullets2, Cursor_01, takeHealth1);
         }
-
-        if(checkOverlap(bullets2, Cursor_01) && player1Health > 0)
+        else if(isEndGame)
         {
-            player1Health -= 1;
-        }        
+            music.stop();
+            //stop players from moving
+            Cursor_01.body.velocity.x = 0;
+            Cursor_01.body.velocity.y = 0;
+            Cursor_02.body.velocity.x = 0;
+            Cursor_02.body.velocity.y = 0;
+
+            //check who won
+            if(player1Health <= 0)
+            {
+               endGameText = game.add.text(game.world.centerX, game.world.centerY, 'Player 2  Wins!', { fill: '#800080' });
+            }
+            else if(player2Health <= 0)
+            {
+                endGameText = game.add.text(game.world.centerX, game.world.centerY, 'Player 1  Wins!', { fill: '#00FF00' });
+            }
+        }
         
     }
+    //subtract player 1 health
+    function takeHealth1()
+    {
+        if(player1Health > 0)
+        {
+            player1Health -= 1
+            player1HealthText.setText("Player 1 Health = " + player1Health);
+        }
+        else
+        {
+            isEndGame = true;
+        }
+    }
+
+    //subtract player 2 health
+    function takeHealth2()
+    {
+        if(player2Health > 0)
+        {
+            player2Health -= 1
+            player2HealthText.setText("Player 2 Health = " + player2Health);
+        }
+        else
+        {
+            isEndGame = true;
+        }
+    }
+
+
     //convert to degrees
     function toDegrees (angle) 
     {
@@ -292,6 +348,7 @@ window.onload = function() {
     //fire for player 1
     function fire1() {
 
+        //make delay for bullets firing
         if (game.time.now > nextFire && bullets1.countDead() > 0)
         {
             nextFire = game.time.now + fireRate;
@@ -304,6 +361,11 @@ window.onload = function() {
             bullet.body.velocity.y = Cursor_01.body.velocity.y*3;
 
             bullet.angle = Cursor_01.angle;
+
+            if(game.physics.arcade.overlap(bullets1, Cursor_02))
+            {
+                bullet.destroy();
+            }
         }
     
     }
@@ -323,16 +385,13 @@ window.onload = function() {
             bullet2.body.velocity.y = Cursor_02.body.velocity.y*3;
 
             bullet2.angle = Cursor_02.angle;
+
+            if(game.physics.arcade.overlap(bullets2, Cursor_01))
+            {
+                bullet2.destroy();
+            }
         }
     
     }
 
-    function checkOverlap(spriteA, spriteB) 
-    {
-        var boundsA = spriteA.getBounds();
-        var boundsB = spriteB.getBounds();
-    
-        return Phaser.Rectangle.intersects(boundsA, boundsB);
-    
-    }
 };
