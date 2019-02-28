@@ -38,7 +38,7 @@ var mainState = {
     },
     
     create: function() { 
-        background = game.add.sprite(0, 0, 'background');6
+        background = game.add.sprite(0, 0, 'background');
     
         // Set the physics system
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -108,13 +108,13 @@ restartGame: function() {
 },
 
 addOneCone: function(x, y) {
-    // Create a pipe at the position x and y
+    // Create a cone at the position x and y
     var cone = game.add.sprite(x, y, 'cone');
 
-    // Add the pipe to our previously created group
+    // Add the cone to group
     this.pipes.add(cone);
 
-    // Enable physics on the pipe 
+    // Enable physics on the cone 
     game.physics.arcade.enable(cone);
 
     // Add velocity to the pipe to make it move left
@@ -126,12 +126,10 @@ addOneCone: function(x, y) {
 },
 
 addRowOfCones: function() {
-    // Randomly pick a number between 1 and 5
-    // This will be the hole position
+    // This will be the hole 
     var hole = Math.floor(Math.random() * 5) + 1;
 
     // Add the 6 cones
-    // With one big hole at position 'hole' and 'hole + 1'
     for (var i = 0; i < 8; i++)
     {
         if (i != hole && i != hole + 1) 
@@ -161,7 +159,7 @@ gameAction: function() {
             randX =  Math.floor((Math.random()*300)) + 20;
             randY =  randY - Math.floor((Math.random()*100)) + 50;
            
-            if(rand == 1)//ramp
+            if(rand == 1 || rand == 2)//ramp
             {
              ramp = game.add.sprite(randX, randY, 'ramp');
                 
@@ -175,7 +173,7 @@ gameAction: function() {
             randX =  Math.floor((Math.random()*300)) + 20;
             randY =  randY - Math.floor((Math.random()*100)) + 50;
 
-            if(rand == 1)
+            if(rand == 1 || rand == 3)
             {
                 spike = game.add.sprite(randX, randY, 'spike');
 
