@@ -26,8 +26,6 @@ window.onload = function() {
     var keys;
     var bullets1;
     var bullet;
-    var fireRate = 140;
-    var nextFire = 0;
     var player1Health = 150;
     var player1HealthText;
     var isEndGame;
@@ -38,7 +36,7 @@ window.onload = function() {
     var fireButton;
     var dot;
     var spawnTimer;
-    var enemy1Health = 1000;
+    var enemy1Health = 10;
     var Spikes;
     var enemy1Speed = 100;
     var speedTimer;
@@ -74,7 +72,7 @@ window.onload = function() {
 
         gun.bulletSpeed = 600;
 
-        gun.fireRate = 1000;
+        gun.fireRate = 100;
 
         gun.bulletAngleOffset = 90;
 
@@ -292,6 +290,13 @@ window.onload = function() {
     function hitEnemy1(bullet)
     {
         bullet.kill();
+        if(enemy1Health > 0)
+        {
+        enemy1Health--;
+        }
+        else if(enemy1Health == 0)
+        {
+            enemy1Health = 10;
             var temp = Enemy_01.getClosestTo(bullet);
             var spike1;
             Spikes.create(temp.x, temp.y - 10, 'Spike');
@@ -317,6 +322,7 @@ window.onload = function() {
 
             score += 10
             scoreText.setText("Score = " + score);
+        }
     }
 
     function increaseSpeed()
