@@ -155,6 +155,7 @@ window.onload = function() {
         //overlap bullets and enemy1
         game.physics.arcade.overlap(gun.bullets, Enemy_01, hitEnemy1, null, this);
         game.physics.arcade.overlap(Spikes, Cursor_01, hitPlayer, null, this);
+        game.physics.arcade.overlap(Enemy_01, Cursor_01, hitPlayer2, null, this);
         
     }
     //subtract player 1 health
@@ -169,6 +170,23 @@ window.onload = function() {
         }
         else
         {
+            isEndGame = true;
+        }
+    }
+
+    function hitPlayer2()
+    {
+        var temp = Enemy_01.getClosestTo(Cursor_01);
+        temp.destroy();
+        if(player1Health > 0)
+        {
+            player1Health -= 50
+            player1HealthText.setText("Player 1 Health = " + player1Health);
+        }
+        else
+        {
+            player1Health = 0;
+            player1HealthText.setText("Player 1 Health = " + player1Health);
             isEndGame = true;
         }
     }
