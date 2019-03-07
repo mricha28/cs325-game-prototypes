@@ -43,7 +43,7 @@ window.onload = function() {
     var enemy1Speed = 100;
     var speedTimer;
     var spikeSpeed = 150;
-    var frequency = 1000;
+    var frequency = 800;
     var screenSpikeTimer;
     var location;
     var xSpacing = 400/20;
@@ -74,7 +74,7 @@ window.onload = function() {
 
         gun.bulletSpeed = 600;
 
-        gun.fireRate = 100;
+        gun.fireRate = 1000;
 
         gun.bulletAngleOffset = 90;
 
@@ -289,11 +289,10 @@ window.onload = function() {
         game.physics.arcade.moveToObject(Enemy_01.getTop(), Cursor_01, enemy1Speed);
     }
 
-    function hitEnemy1()
+    function hitEnemy1(bullet)
     {
-        var temp = Enemy_01.getClosestTo(gun.bullets);
-        if(enemy1Health%50 == 0)
-        {
+        bullet.kill();
+            var temp = Enemy_01.getClosestTo(bullet);
             var spike1;
             Spikes.create(temp.x, temp.y - 10, 'Spike');
             spike1 = Spikes.getTop()
@@ -318,12 +317,6 @@ window.onload = function() {
 
             score += 10
             scoreText.setText("Score = " + score);
-        }
-        else if(enemy1Health < 10)
-        {
-            enemy1Health = 1000;
-        }
-        enemy1Health--;
     }
 
     function increaseSpeed()
