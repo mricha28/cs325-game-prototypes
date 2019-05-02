@@ -235,7 +235,6 @@ window.onload = function() {
     {
         EnemyGroup.removeAll(true);
         Enemy2Group.removeAll(true);
-        Enemy3Group.removeAll(true);
         Bomb.destroy();
     }
 
